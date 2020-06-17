@@ -33,15 +33,48 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+  const { title, url, techs } = request.body;
+  const repoIndexId = repositories.findIndex(repositorie => repositorie.id == id);
+  var updatedRepositorie = {};
+  if (repoIndexId < 0) {
+    return response.status(400).json({ erro: "invalid repositorie." })
+  } else {
+    updatedRepositorie = repositories[repoIndexId];
+    updatedRepositorie.title = title;
+    updatedRepositorie.url = url;
+    updatedRepositorie.techs = techs;
+  }
+  repositories[repoIndexId] = updatedRepositorie;
+
+  return response.json(repositories[repoIndexId]);
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  const repoIndexId = repositories.findIndex(repositorie => repositorie.id == id);
+  if (repoIndexId < 0) {
+    return response.status(400).json({ erro: "invalid repositorie." })
+  }
+  repositories.splice(repoIndexId, 1);
+
+  response.status(204).send();
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+  const { id, like } = request.params
+  const repoIndexId = repositories.findIndex(repositorie => repositorie.id == id);
+  var updatedRepositorie = {};
+  if (repoIndexId < 0) {
+    return response.status(400).json({ erro: "invalid repositorie." })
+  } else {
+    updatedRepositorie = repositories[repoIndexId];
+    updatedRepositorie.likes = updatedRepositorie.likes + 1
+  }
+  repositories[repoIndexId] = updatedRepositorie;
+
+  response.json(repositories[repoIndexId]);
 });
 
 module.exports = app;
